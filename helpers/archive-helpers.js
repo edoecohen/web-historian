@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 var _ = require('underscore');
 
 /*
@@ -9,7 +10,7 @@ var _ = require('underscore');
  * customize it in any way you wish.
  */
 
-exports.paths = {
+exports.paths = paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
   'archivedSites' : path.join(__dirname, '../archives/sites'),
   'list' : path.join(__dirname, '../archives/sites.txt')
@@ -31,7 +32,26 @@ exports.readListOfUrls = function(){
 exports.isUrlInList = function(){
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(request, response){
+  var data = '';
+  request.on('data', function(chunk){
+      data += chunk;
+    });
+
+  request.on('end', function(){
+    var parsedUrl = url.parse(data);
+
+    // TODO: append only if it's not in the file
+    fs.appendFile(paths.list, data + "\n", function(err){
+      if(!err){
+        console.log('URL archived');
+      }
+      else {
+        console.log('Error');
+      }
+      // THROW 404
+    });
+  });
 };
 
 exports.isURLArchived = function(){

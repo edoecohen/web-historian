@@ -7,13 +7,32 @@ $(document).ready(function(){
         console.log('test');
         $query = $(this).val();
         console.log($query);
-        archiveURL($query);
+        archiveURL($query, 'POST');
       }
   });
+
+  var retrieveURL = function(url){
+    $.ajax({
+      type: 'GET',
+      url: url,
+      data: JSON.stringify(url),
+      contentType: 'application/json',
+      success: function(json){
+        console.log('Loading page!');
+      },
+      complete: function(){
+        console.log('Loading page loaded.');
+      },
+      error: function(err){
+        console.log('error',err);
+      }
+    });
+  };
 
   var archiveURL = function(url){
     $.ajax({
       type: 'POST',
+      url: url,
       data: JSON.stringify(url),
       contentType: 'application/json',
       success: function(json){
@@ -23,10 +42,15 @@ $(document).ready(function(){
         console.log('your page has been archived');
       },
       error: function(err){
+        if(err.status === 302){
+          retrieveURL(err.responseText);
+        }
         console.log('error',err);
       }
     });
   };
+
+
 
 
 

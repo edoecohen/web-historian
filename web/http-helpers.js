@@ -10,28 +10,6 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset, callback) {
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
-};
-
-exports.respond = respond = function(request, response, body){
-  headers['Content-Type'] = map[path.extname(request.url)];
-  response.writeHead(statusCode.ok, headers);
-  response.write(body);
-  response.end();
-};
-
-exports.sendFile = sendFile = function(route, request, response){
-  fs.readFile(route, function(err, file){
-    respond(request, response, file);
-    if(err){
-      console.log('error thrown');
-      // TODO - throw 404 error
-    }
-  });
-};
-
 exports.map = map = {
   '.ico' : 'image/x-icon',
   '.html': 'text/html',
@@ -42,7 +20,38 @@ exports.map = map = {
 };
 
 exports.statusCode = statusCode = {
-  'ok' : 200
+  'ok' : 200,
+  'found': 302,
+  'notFound': 404
 }
+
+exports.serveAssets = function(res, asset, callback) {
+  // Write some code here that helps serve up your static files!
+  // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+};
+
+exports.respond = respond = function(request, response, body, statusCode){
+  statusCode = statusCode || 200;
+  headers['Content-Type'] = map[path.extname(request.url)];
+  response.writeHead(statusCode, headers);
+  response.write(body);
+  response.end();
+};
+
+exports.sendFile = sendFile = function(route, request, response, statusCode){
+  fs.readFile(route, function(err, file){
+    if(err){
+      respond(request, response, '', statusCode.notFound);
+    }
+    else if(statusCode === exports.statusCode.found){
+      respond(request, response, 'loading.html', exports.statusCode.found);
+    }
+    else {
+     respond(request, response, file, exports.statusCode.ok);
+    }
+  });
+};
+
+
 
 // As you progress, keep thinking about what helper functions you can put here!
