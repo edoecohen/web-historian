@@ -33,6 +33,12 @@ exports.serveAssets = function(res, asset, callback) {
 exports.respond = respond = function(request, response, body, statusCode){
   statusCode = statusCode || 200;
   headers['Content-Type'] = map[path.extname(request.url)];
+  console.log(statusCode);
+  if(statusCode === exports.statusCode.found) {
+    console.log(statusCode);
+    headers['Location'] = '/loading.html';
+  }
+  console.log(headers);
   response.writeHead(statusCode, headers);
   response.write(body);
   response.end();

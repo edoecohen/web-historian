@@ -3,11 +3,11 @@ $(document).ready(function(){
 
   $("input").keypress(function(event) {
       if (event.which == 13) {
-        event.preventDefault();
+        //event.preventDefault();
         console.log('test');
         $query = $(this).val();
         console.log($query);
-        archiveURL($query, 'POST');
+        //archiveURL($query, 'POST');
       }
   });
 
@@ -15,9 +15,8 @@ $(document).ready(function(){
     $.ajax({
       type: 'GET',
       url: url,
-      data: JSON.stringify(url),
-      contentType: 'application/json',
-      success: function(json){
+      contentType: 'text/html',
+      success: function(html){
         console.log('Loading page!');
       },
       complete: function(){

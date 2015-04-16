@@ -32,7 +32,6 @@ exports.handleRequest = function (request, response) {
   }
   if(request.method === "POST"){
     archive.addUrlToList(request, response);
-    console.log(loadingSite);
-    respond(request, response, 'loading.html', statusCode.found);
+    respond(request, response, '', statusCode.found);
   }
 };
