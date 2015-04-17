@@ -25,13 +25,15 @@ exports.handleRequest = function (request, response) {
     var sitepath = path.join(archivedSites, request.url);
 
     if(route){
-      sendFile(route, request, response);
+      sendFile(route, request, response, statusCode.ok);
     } else {
       sendFile(sitepath, request, response, statusCode.ok);
     }
   }
+
   if(request.method === "POST"){
-    archive.addUrlToList(request, response);
-    respond(request, response, '', statusCode.found);
+    archive.addUrlToList(request, response, function(redirectPath, statusCode){
+      respond(request, response, redirectPath, statusCode);
+    });
   }
 };

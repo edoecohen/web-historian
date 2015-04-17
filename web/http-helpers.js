@@ -33,21 +33,20 @@ exports.serveAssets = function(res, asset, callback) {
 exports.respond = respond = function(request, response, body, statusCode){
   statusCode = statusCode || 200;
   headers['Content-Type'] = map[path.extname(request.url)];
-  console.log(statusCode);
   if(statusCode === exports.statusCode.found) {
-    console.log(statusCode);
-    headers['Location'] = '/loading.html';
+    headers['Location'] = body;
+    response.writeHead(statusCode, headers);
+  } else {
+    response.writeHead(statusCode, headers);
+    response.write(body);
   }
-  console.log(headers);
-  response.writeHead(statusCode, headers);
-  response.write(body);
   response.end();
 };
 
 exports.sendFile = sendFile = function(route, request, response, statusCode){
   fs.readFile(route, function(err, file){
     if(err){
-      respond(request, response, '', statusCode.notFound);
+      respond(request, response, '', exports.statusCode.notFound);
     }
     else if(statusCode === exports.statusCode.found){
       respond(request, response, 'loading.html', exports.statusCode.found);
